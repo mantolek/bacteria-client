@@ -62,13 +62,13 @@ function App() {
         formData.append('chart_type', chartType);
 
         try {
-            const res = await fetch('http://localhost:5050/analyze', {
+            const res = await fetch('https://bacteria-server.onrender.com/analyze', {
                 method: 'POST',
                 body: formData,
             });
 
             const data = await res.json();
-            setImageUrl(`http://localhost:5050${data.img}`);
+            setImageUrl(`https://bacteria-server.onrender.com${data.img}`);
         } catch {
             setError('ERROR: Maybe the file is wrong or data is missing?')
         }

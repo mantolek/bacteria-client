@@ -129,7 +129,7 @@ function App() {
 
             {imageUrl && (
                 <div style={{marginTop: 30}}>
-                    <img src={imageUrl} alt="Result" style={{maxWidth: 600, border: '1px solid #ccc'}}/>
+                    <img src={imageUrl} alt="Result" />
                 </div>
             )}
         </div>

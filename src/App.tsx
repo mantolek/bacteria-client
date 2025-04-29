@@ -120,8 +120,8 @@ function App() {
         formData.append('colors', JSON.stringify(colors));
 
         try {
-            // const res = await fetch('https://bacteria-server.onrender.com/analyze', {
-            const res = await fetch('http://localhost:5050/analyze', {
+            const res = await fetch('https://bacteria-server.onrender.com/analyze', {
+            // const res = await fetch('http://localhost:5050/analyze', {
                 method: 'POST',
                 body: formData,
             });
@@ -131,8 +131,8 @@ function App() {
             }
 
             const data = await res.json();
-            // setImageUrl(`https://bacteria-server.onrender.com${data.img}`);
-            setImageUrl(`http://localhost:5050/${data.img}?t=${Date.now()}`);
+            setImageUrl(`https://bacteria-server.onrender.com${data.img}?t=${Date.now()}`);
+            // setImageUrl(`http://localhost:5050/${data.img}?t=${Date.now()}`);
             setError('');
         } catch {
             setError('ERROR: Maybe the file is wrong or data is missing?')

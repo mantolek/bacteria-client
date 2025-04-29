@@ -1,0 +1,103 @@
+body {
+  height: 100vh;
+  margin: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.Container {
+  overflow: auto;
+}
+
+.Result {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.Error {
+  background: red;
+  color: white;
+  padding: 12px;
+  margin: 0;
+  text-align: center;
+}
+
+.Title {
+  text-align: center;
+  padding: 20px 20px 0;
+
+  h3, p {
+    margin: 0;
+  }
+
+  h3 {
+    margin-bottom: 8px;
+    font-size: 32px;
+  }
+}
+
+.Buttons {
+  display: flex;
+  grid-gap: 8px;
+  flex-wrap: wrap;
+  padding: 20px;
+  background-color: #f7f7f7;
+}
+
+.Upload {
+  display: flex;
+  align-items: center;
+  grid-gap: 8px;
+
+  &__text {
+    display: flex;
+    align-items: center;
+    grid-gap: 8px;
+
+    p {
+      margin: 0;
+    }
+  }
+}
+
+.ChartType {
+  display: flex;
+  align-items: center;
+  grid-gap: 8px;
+  margin: 8px 0;
+
+  &__button {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+}
+
+.Button {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+  padding: 6px 12px;
+  cursor: pointer;
+
+  &--selected {
+    background-color: black;
+    color: white;
+  }
+}
+
+.Action {
+  padding: 20px 20px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.Colors {
+  display: flex;
+  align-items: center;
+}

@@ -27,7 +27,8 @@ body {
 
 .Title {
   text-align: center;
-  padding: 20px 20px 0;
+  padding: 0 20px;
+  margin-top: 10px;
 
   h3, p {
     margin: 0;
@@ -51,6 +52,7 @@ body {
   display: flex;
   align-items: center;
   grid-gap: 8px;
+  margin-bottom: 8px;
 
   &__text {
     display: flex;
@@ -67,7 +69,7 @@ body {
   display: flex;
   align-items: center;
   grid-gap: 8px;
-  margin: 8px 0;
+  margin-bottom: 8px;
 
   &__button {
     background-color: white;
@@ -100,4 +102,63 @@ body {
 .Colors {
   display: flex;
   align-items: center;
+}
+
+.DownloadButtons {
+  display: flex;
+  align-items: center;
+  grid-gap: 8px;
+}
+
+.Loading {
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.Loader {
+  width: 48px;
+  height: 48px;
+  border: 2px solid #000;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+
+  &::after {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    background: #FF3D00;
+    width: 3px;
+    height: 24px;
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.ColorPicker {
+  display: flex;
+  flex-wrap: wrap;
+  grid-gap: 10px;
+  margin-bottom: 8px;
+
+  &__element {
+    display: flex;
+    align-items: center;
+    grid-gap: 8px;
+  }
 }

@@ -44,10 +44,15 @@ function App() {
 
     const [selected, setSelected] = useState(analysisTypes[0]);
     const [file, setFile] = useState<File | null>(null);
-    const [imageUrl, setImageUrl] = useState<string | null>(null);
+    const [imageSvgUrl, setImageSvgUrl] = useState<string | null>(null);
+    const [imageEmfUrl, setImageEmfUrl] = useState<string | null>(null);
     const [error, setError] = useState('');
     const [groups, setGroups] = useState<string[]>([]);
     const [colors, setColors] = useState<Record<string, string>>({});
+    const [customTitle, setCustomTitle] = useState('');
+    const [xLabel, setXLabel] = useState('');
+    const [yLabel, setYLabel] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
         setError('');
@@ -118,8 +123,13 @@ function App() {
         formData.append('analysis_type', selected);
         formData.append('chart_type', chartType);
         formData.append('colors', JSON.stringify(colors));
+        if (customTitle.trim()) formData.append('custom_title', customTitle.trim());
+        if (xLabel.trim()) formData.append('x_label', xLabel.trim());
+        if (yLabel.trim()) formData.append('y_label', yLabel.trim());
 
         try {
+            setLoading(true);
+
             const res = await fetch('https://bacteria-server.onrender.com/analyze', {
             // const res = await fetch('http://localhost:5050/analyze', {
                 method: 'POST',
@@ -131,40 +141,51 @@ function App() {
             }
 
             const data = await res.json();
-            setImageUrl(`https://bacteria-server.onrender.com${data.img}?t=${Date.now()}`);
-            // setImageUrl(`http://localhost:5050/${data.img}?t=${Date.now()}`);
+            setImageSvgUrl(`https://bacteria-server.onrender.com${data.img_svg}?t=${Date.now()}`);
+            setImageEmfUrl(`https://bacteria-server.onrender.com${data.img_emf}?t=${Date.now()}`);
+            // setImageSvgUrl(`http://localhost:5050/${data.img_svg}?t=${Date.now()}`);
+            // setImageEmfUrl(`http://localhost:5050/${data.img_emf}?t=${Date.now()}`);
             setError('');
         } catch {
             setError('ERROR: Maybe the file is wrong or data is missing?')
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleClean = () => {
         setFile(null);
-        setImageUrl(null);
+        setImageSvgUrl(null);
+        setImageEmfUrl(null)
         setError('');
+        setXLabel('');
+        setYLabel('');
+        setCustomTitle('');
         setGroups([])
         setColors({})
         if (fileInputRef.current) fileInputRef.current.value = '';
     }
 
-    const handleDownload = () => {
-        if (!imageUrl) return;
-        fetch(imageUrl)
+    const handleDownload = (file: string) => {
+        if (!file) return;
+
+        const extension = file.split('.').pop() || 'svg'; // svg lub emf
+        const filename = 'chart.' + extension;
+
+        fetch(file)
             .then(response => response.blob())
             .then(blob => {
                 const url = window.URL.createObjectURL(blob);
-
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'chart.svg';
+                a.download = filename;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 window.URL.revokeObjectURL(url);
             })
             .catch(error => {
-                console.error('Error downloading the SVG:', error);
+                console.error(`Error downloading the ${extension.toUpperCase()} file:`, error);
             });
     };
 
@@ -206,6 +227,27 @@ function App() {
                     </div>}
                 </div>
 
+                {file &&   <div style={{ marginBottom: '8px' }}>
+                    <label>Title: <input type="text" value={customTitle} onChange={e => setCustomTitle(e.target.value)} /></label>
+                    <label style={{ marginLeft: '10px' }}>X-axis label: <input type="text" value={xLabel} onChange={e => setXLabel(e.target.value)} /></label>
+                    <label style={{ marginLeft: '10px' }}>Y-axis label: <input type="text" value={yLabel} onChange={e => setYLabel(e.target.value)} /></label>
+                </div>}
+
+                {file && groups.length > 0 && (
+                    <div className="ColorPicker">
+                        {groups.map(group => (
+                            <div key={group} className="ColorPicker__element">
+                                <span>{group}</span>
+                                <input
+                                    type="color"
+                                    value={colors[group] || '#000000'}
+                                    onChange={(e) => handleColorChange(group, e.target.value)}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                )}
+
                 {file && <div className="ChartType">
                     {chartTypes[selected].map((chart) => (
                         <button className="ChartType__button" key={chart} onClick={() => handleCreateChart(chart)}>
@@ -214,31 +256,20 @@ function App() {
                     ))}
                 </div>}
 
-                {file && groups.length > 0 && (
-                    <div className="ColorPicker">
-                        {groups.map(group => (
-                            <div key={group} style={{marginBottom: '10px'}}>
-                                <span>{group}</span>
-                                <input
-                                    type="color"
-                                    value={colors[group] || '#000000'}
-                                    onChange={(e) => handleColorChange(group, e.target.value)}
-                                    style={{marginLeft: '10px'}}
-                                />
-                            </div>
-                        ))}
-                    </div>
-                )}
-
-                {imageUrl && <div>
-                    <button onClick={handleDownload} className="Button">Download</button>
+                {(imageSvgUrl || imageEmfUrl) && <div className="DownloadButtons">
+                    {imageSvgUrl && <button onClick={() => handleDownload(imageSvgUrl)} className="Button">Download SVG</button>}
+                    {imageEmfUrl && <button onClick={() => handleDownload(imageEmfUrl)} className="Button">Download EMF</button>}
                 </div>}
             </div>
 
+            {loading && <div className="Loading">
+                <span className="Loader" />
+                <p>Loading</p>
+            </div>}
 
-            {imageUrl && (
+            {imageSvgUrl && !loading && (
                 <div className="Result">
-                    <img src={imageUrl} alt="Result"/>
+                    <img src={imageSvgUrl} alt="Result"/>
                 </div>
             )}
         </div>

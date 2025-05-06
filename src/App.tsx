@@ -130,7 +130,7 @@ function App() {
         try {
             setLoading(true);
 
-            const res = await fetch('https://bacteria-server.onrender.com/analyze', {
+            const res = await fetch('https://bacteria-server-2.onrender.com/analyze', {
             // const res = await fetch('http://localhost:5050/analyze', {
                 method: 'POST',
                 body: formData,
@@ -141,8 +141,8 @@ function App() {
             }
 
             const data = await res.json();
-            setImageSvgUrl(`https://bacteria-server.onrender.com${data.img_svg}?t=${Date.now()}`);
-            setImageEmfUrl(`https://bacteria-server.onrender.com${data.img_emf}?t=${Date.now()}`);
+            setImageSvgUrl(`https://bacteria-server-2.onrender.com${data.img_svg}?t=${Date.now()}`);
+            setImageEmfUrl(`https://bacteria-server-2.onrender.com${data.img_emf}?t=${Date.now()}`);
             // setImageSvgUrl(`http://localhost:5050/${data.img_svg}?t=${Date.now()}`);
             // setImageEmfUrl(`http://localhost:5050/${data.img_emf}?t=${Date.now()}`);
             setError('');
